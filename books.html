@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Books (fetch)</title>
+</head>
+<body>
+  <h1>Books</h1>
+  <p>(a) Title of first book: <span id="first"></span></p>
+  <p>(b) Author of second book: <span id="second"></span></p>
+  <h2>(c) Genres</h2>
+  <ul id="genres"></ul>
+  <p id="error" style="color:#b00020"></p>
+
+  <script>
+    async function load() {
+      try {
+        const res = await fetch("books.json");
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const { books } = await res.json(); // throws on invalid JSON
+
+        document.getElementById("first").textContent = books[0].title;
+        document.getElementById("second").textContent = books[1].author;
+
+        const list = document.getElementById("genres");
+        for (const b of books) {
+          const li = document.createElement("li");
+          li.textContent = `${b.title} — ${b.genres.join(", ")}`;
+          list.appendChild(li);
+        }
+      } catch (err) {
+        document.getElementById("error").textContent =
+          "Sorry, the book data could not be loaded. Please try again later.";
+        console.error(err);
+      }
+    }
+    load();
+  </script>
+</body>
+</html>
